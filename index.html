@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Formato de Inspección IMSS - Limpieza e Higiene</title>
+  <script src="https://cdn.sheetjs.com/xlsx-0.20.0/package/dist/xlsx.full.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 15px;
+      max-width: 1400px;
+      margin: auto;
+      background: #f8f9fa;
+    }
+    .header {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .logo-imss {
+      height: 60px;
+      margin-bottom: 10px;
+    }
+    .header h1 {
+      font-size: 15px;
+      margin: 0;
+      color: #0056A3;
+      font-weight: bold;
+    }
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      margin: 10px 0;
+      font-size: 12px;
+    }
+    th, td {
+      border: 1px solid #333;
+      padding: 6px;
+      text-align: center;
+    }
+    th {
+      background: #0056A3;
+      color: white;
+    }
+    .concepto {
+      background: #B0C4DE;
+      text-align: left;
+      padding-left: 10px;
+    }
+    .semanas-header th {
+      background: #6c757d !important;
+    }
+    .radio-group {
+      display: flex;
+      justify-content: center;
+      gap: 6px;
+      font-size: 11px;
+    }
+    .radio-option {
+      display: inline-flex;
+      align-items: center;
+      font-weight: bold;
+    }
+    .btn {
+      padding: 10px 15px;
+      margin: 5px;
+      border: none;
+      cursor: pointer;
+      font-size: 14px;
+    }
+    .btn-calc { background: #007bff; color: white; }
+    .btn-excel { background: #28a745; color: white; }
+    .btn-pdf { background: #d9534f; color: white; }
+    .btn:hover { opacity: 0.9; }
+    .observations {
+      height: 80px;
+      resize: vertical;
+      padding: 10px;
+      background: #FFFACD;
+      border: 1px solid #ccc;
+      font-family: inherit;
+      width: 100%;
+      box-sizing: border-box;
+    }
+    .footer-signature {
+      display: flex;
+      justify-content: space-around;
+      margin-top: 30px;
+    }
+    .signature-box {
+      text-align: center;
+      width: 45%;
+    }
+    .percentage {
+      font-weight: bold;
+      text-align: center;
+      font-size: 16px;
+      margin: 15px 0;
+      background: #E9ECEF;
+      padding: 10px;
+      border-radius: 5px;
+      color: #0056A3;
+    }
+    .fecha {
+      background: #FFFACD;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="contenido">
+    <div class="header">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/4/4c/Logo_IMSS.png" alt="IMSS" class="logo-imss">
+      <h1>INSTITUTO MEXICANO DEL SEGURO SOCIAL<br>
+      Dirección de Administración y Evaluación a Delegaciones<br>
+      Coordinación de Infraestructura Inmobiliaria<br>
+      Coordinación Técnica de Proyectos y Conservación de Inmuebles<br>
+      Departamento de limpieza e higiene</h1>
+    </div>
+
+    <table>
+      <tr>
+        <td><strong>Tipo y N° de Unidad:</strong></td>
+        <td colspan="3" contenteditable="true">HOSPITAL GENERAL REGIONAL No.66</td>
+        <td><strong>Localidad:</strong></td>
+        <td colspan="3" contenteditable="true">CD JUAREZ</td>
+      </tr>
+      <tr>
+        <td><strong>Servicio:</strong></td>
+        <td colspan="3" contenteditable="true"></td>
+        <td><strong>Turno:</strong></td>
+        <td colspan="3" contenteditable="true"></td>
+      </tr>
+      <tr>
+        <td><strong>Area:</strong></td>
+        <td colspan="3" contenteditable="true"></td>
+        <td><strong>Responsable del Area:</strong></td>
+        <td colspan="3" contenteditable="true"></td>
+      </tr>
+    </table>
+
+    <table id="inspecciones">
+      <tr class="semanas-header">
+        <th>1ª Inspección Fecha</th>
+        <th>2ª Inspección Fecha</th>
+        <th>3ª Inspección Fecha</th>
+        <th>4ª Inspección Fecha</th>
+        <th>% Promedio</th>
+      </tr>
+      <tr>
+        <td class="fecha" onclick="llenarFecha(this)"></td>
+        <td class="fecha" onclick="llenarFecha(this)"></td>
+        <td class="fecha" onclick="llenarFecha(this)"></td>
+        <td class="fecha" onclick="llenarFecha(this)"></td>
+        <td><span id="avg-percentage">0%</span></td>
+      </tr>
+    </table>
+
+    <table id="tabla-conceptos">
+      <thead>
+        <tr class="semanas-header">
+          <th>Concepto</th>
+          <th>1ª Semana</th>
+          <th>2ª Semana</th>
+          <th>3ª Semana</th>
+          <th>4ª Semana</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+
+    <div style="margin-top: 20px;">
+      <strong>OBSERVACIONES:</strong><br>
+      <textarea id="observaciones" class="observations" placeholder="Escribe tus observaciones aquí..."></textarea>
+    </div>
+
+    <div class="percentage">
+      Porcentaje de Limpieza = 
+      <span id="positive">0</span> L × 100 / 
+      (<span id="total">0</span>) = 
+      <span id="final-percentage">0%</span>
+    </div>
+
+    <div class="footer-signature">
+      <div class="signature-box">
+        <p>AYUDANTE LH</p>
+        <div id="firma1" contenteditable="true" style="height: 60px; border: 1px solid #333;"></div>
+      </div>
+      <div class="signature-box">
+        <p>JEFE DE SERVICIO</p>
+        <div id="firma2" contenteditable="true" style="height: 60px; border: 1px solid #333;"></div>
+      </div>
+    </div>
+  </div>
+
+  <div style="text-align: center; margin-top: 20px;">
+    <button class="btn btn-calc" onclick="calcularPorcentaje()">Calcular Porcentaje</button>
+    <button class="btn btn-excel" onclick="exportarAExcel()">Exportar a Excel</button>
+    <button class="btn btn-pdf" onclick="exportarAPDF()">Exportar a PDF</button>
+  </div>
+
+  <script>
+    const conceptos = [
+      "Archiveros", "Anaqueles", "autoclave", "Buro", "Bacinete", "Banco de altura",
+      "Bano personal", "Bote basura", "Bancas tadem", "Barandales", "Banco giratorios",
+      "Bascula para bebe", "Baño maria", "Bascula con estadimetro", "Bote camapana",
+      "Bombas de infusion", "Baumanometro portatil", "Camas", "Camillas", "Cunas",
+      "Cuna radiante", "Central de enfermeria", "Cortinas", "Cubeta de patada",
+      "Cestos de basura", "Camapana", "Carro de curaciones", "Carro porta expediante",
+      "Carro pasteur", "Casilleros", "Cespol", "Computadoras", "Carro care",
+      "carro de paro", "Carro amarillo", "Carro Contenedor", "Carro de limpieza (Negro )",
+      "Cuadros", "Credfenzas", "Centrigugas", "Espejos", "Escritorios", "Equipo electromedico",
+      "Escaleras", "Estinguidor", "Extractor de aire (rejilla)", "Elevadores",
+      "Limpieza de piso blando", "Filtro de campana", "Incubadora", "Jaboneras",
+      "Lampara de techo", "Lamapara chicote", "Lamapara de pared", "Lavabos",
+      "Lamapara de quirofano", "Lavado de piso duro", "limpieza setico",
+      "Lavabo central con trampa para yeso", "Mesa de exploracion", "Mesa de riñon",
+      "Mesa puente", "Mesa de expulsion", "Mesa mayo", "Mauina de anestesia",
+      "Mesa de operaciones", "Mesa peines", "Mesa de autopsias", "Monitores portatiles",
+      "Monitores de pared", "Mesas de trabajo", "Mamparas", "Marco de puerta", "Numeracion",
+      "orden de septico", "Paredes", "Puertas", "Persianas", "Pasillos", "Porta comodos",
+      "Porta frascos", "Porta sueros", "Regadera", "Reposet", "Red de frio", "Resonador",
+      "Sillas giratorias", "Silla de ruedas", "Torre cielitica", "Telefono", "Tarja",
+      "Transfer", "Torre de endoscopia", "Toma de oxigeno", "Tuberia visible", "Tripie",
+      "Techo", "Tomografo", "Ultrsasonido", "Vidrios", "Vestidores", "Vitrinas",
+      "Ventiladores", "Ventanillas", "Wc", "Zoclo"
+    ];
+
+    const tbody = document.querySelector('#tabla-conceptos tbody');
+    conceptos.forEach((concepto, idx) => {
+      const row = document.createElement('tr');
+      let celdas = '';
+      for (let s = 1; s <= 4; s++) {
+        const name = `c_${idx}_s${s}`;
+        celdas += `
+          <td>
+            <div class="radio-group">
+              <label class="radio-option"><input type="radio" name="${name}" value="L"> L</label>
+              <label class="radio-option"><input type="radio" name="${name}" value="X" checked> X</label>
+              <label class="radio-option"><input type="radio" name="${name}" value="S"> S</label>
+            </div>
+          </td>`;
+      }
+      row.innerHTML = `<th class="concepto">${concepto}</th>${celdas}`;
+      tbody.appendChild(row);
+    });
+
+    function llenarFecha(celda) {
+      if (!celda.textContent.trim()) {
+        celda.textContent = new Date().toLocaleDateString('es-MX');
+      }
+    }
+
+    function calcularPorcentaje() {
+      let L = 0, total = 0;
+      document.querySelectorAll('#tabla-conceptos input[type="radio"]:checked').forEach(input => {
+        if (input.value === 'L' || input.value === 'S') {
+          total++;
+          if (input.value === 'L') L++;
+        }
+      });
+      const p = total > 0 ? Math.round((L / total) * 100) : 0;
+      document.getElementById('positive').textContent = L;
+      document.getElementById('total').textContent = total;
+      document.getElementById('final-percentage').textContent = p + '%';
+      document.getElementById('avg-percentage').textContent = p + '%';
+    }
+
+    // ✅ EXPORTAR A EXCEL CON COLORES
+    function exportarAExcel() {
+      calcularPorcentaje();
+      const wb = XLSX.utils.book_new();
+
+      // Estilos
+      const ws1 = XLSX.utils.aoa_to_sheet([
+        ["Campo", "Valor"],
+        ["Unidad", document.querySelector('table tr td:nth-child(2)').textContent],
+        ["Localidad", document.querySelector('table tr td:nth-child(6)').textContent],
+        ["Servicio", document.querySelector('table tr:nth-child(2) td:nth-child(2)').textContent],
+        ["Turno", document.querySelector('table tr:nth-child(2) td:nth-child(6)').textContent],
+        ["Área", document.querySelector('table tr:nth-child(3) td:nth-child(2)').textContent],
+        ["Responsable", document.querySelector('table tr:nth-child(3) td:nth-child(6)').textContent],
+        ["Porcentaje", document.getElementById('final-percentage').textContent],
+        ["Observaciones", document.getElementById('observaciones').value],
+        ["Firma Ayudante LH", document.getElementById('firma1').textContent],
+        ["Firma Jefe de Servicio", document.getElementById('firma2').textContent]
+      ]);
+
+      // Aplicar colores (requiere celdas individuales)
+      const colores = {
+        header: { fill: { fgColor: { rgb: "0056A3" } }, font: { color: { rgb: "FFFFFF" }, bold: true } },
+        normal: { fill: { fgColor: { rgb: "FFFFFF" } } }
+      };
+      ws1['!cols'] = [{ wch: 25 }, { wch: 30 }];
+
+      // Aplicar estilo al encabezado
+      ws1['A1'].s = colores.header;
+      ws1['B1'].s = colores.header;
+
+      XLSX.utils.book_append_sheet(wb, ws1, "Resumen");
+
+      // Hoja de conceptos
+      const conceptosData = [["Concepto", "1ª", "2ª", "3ª", "4ª"]];
+      document.querySelectorAll('#tabla-conceptos tbody tr').forEach(row => {
+        const c = row.querySelector('.concepto').textContent;
+        const v = [];
+        for (let s = 1; s <= 4; s++) {
+          const ch = row.querySelector(`input[name$="_s${s}"]:checked`);
+          v.push(ch ? ch.value : 'X');
+        }
+        conceptosData.push([c, ...v]);
+      });
+
+      const ws2 = XLSX.utils.aoa_to_sheet(conceptosData);
+      ws2['!cols'] = [{ wch: 25 }, { wch: 8 }, { wch: 8 }, { wch: 8 }, { wch: 8 }];
+
+      // Estilo: encabezado azul
+      ['A1','B1','C1','D1','E1'].forEach(cell => {
+        if (ws2[cell]) ws2[cell].s = colores.header;
+      });
+
+      // Celdas de datos: amarillo si es "X", blanco si no
+      for (let r = 2; r <= conceptosData.length; r++) {
+        for (let c = 1; c <= 4; c++) {
+          const cellRef = XLSX.utils.encode_cell({ r: r-1, c: c });
+          if (ws2[cellRef]) {
+            const val = ws2[cellRef].v;
+            ws2[cellRef].s = val === 'X' 
+              ? { fill: { fgColor: { rgb: "FFFFE0" } } } 
+              : { fill: { fgColor: { rgb: "FFFFFF" } } };
+          }
+        }
+      }
+
+      XLSX.utils.book_append_sheet(wb, ws2, "Conceptos");
+
+      // Descarga
+      const wbout = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
+      const blob = new Blob([wbout], { type: 'application/octet-stream' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `Inspeccion_IMSS_${new Date().toISOString().slice(0,10)}.xlsx`;
+      document.body.appendChild(a);
+      a.click();
+      setTimeout(() => {
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+      }, 100);
+    }
+
+    // ✅ EXPORTAR A PDF CON LOGO Y COLORES
+    function exportarAPDF() {
+      calcularPorcentaje();
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF('landscape', 'mm', 'a4');
+
+      // Agregar logo (base64 o URL pública)
+      const logoUrl = "https://upload.wikimedia.org/wikipedia/commons/4/4c/Logo_IMSS.png";
+      const img = new Image();
+      img.src = logoUrl;
+      img.onload = () => {
+        doc.addImage(img, 'PNG', 20, 10, 30, 15);
+        doc.setFontSize(14);
+        doc.setTextColor(0, 86, 163);
+        doc.text("INSTITUTO MEXICANO DEL SEGURO SOCIAL", 140, 15, { align: 'center' });
+        doc.setFontSize(11);
+        doc.setTextColor(0, 0, 0);
+        doc.text("Formato de Inspección - Limpieza e Higiene", 140, 22, { align: 'center' });
+
+        let y = 35;
+        const unidad = document.querySelector('table tr td:nth-child(2)').textContent;
+        const localidad = document.querySelector('table tr td:nth-child(6)').textContent;
+        doc.text(`Unidad: ${unidad} | Localidad: ${localidad}`, 20, y);
+        y += 10;
+
+        const fechas = [];
+        document.querySelectorAll('#inspecciones tr:nth-child(2) td').forEach((td, i) => {
+          if (i < 4) fechas.push(td.textContent || '—');
+        });
+        doc.text(`Fechas: 1ª=${fechas[0]}, 2ª=${fechas[1]}, 3ª=${fechas[2]}, 4ª=${fechas[3]}`, 20, y);
+        y += 10;
+
+        doc.text(`Porcentaje: ${document.getElementById('final-percentage').textContent}`, 20, y);
+        y += 15;
+
+        const tableData = [];
+        document.querySelectorAll('#tabla-conceptos tbody tr').forEach(row => {
+          const concepto = row.querySelector('.concepto').textContent;
+          const v = [];
+          for (let s = 1; s <= 4; s++) {
+            const ch = row.querySelector(`input[name$="_s${s}"]:checked`);
+            v.push(ch ? ch.value : 'X');
+          }
+          tableData.push([concepto, ...v]);
+        });
+
+        doc.autoTable({
+          head: [['Concepto', '1ª', '2ª', '3ª', '4ª']],
+          body: tableData,
+          startY: y,
+          theme: 'grid',
+          headStyles: { fillColor: [0, 86, 163], textColor: 255 },
+          styles: { fontSize: 8, cellPadding: 2 },
+          columnStyles: {
+            0: { cellWidth: 40, fontSize: 7 },
+            1: { cellWidth: 15, fillColor: tableData.map(row => row[1] === 'X' ? [255, 255, 224] : [255, 255, 255]) },
+            2: { cellWidth: 15 },
+            3: { cellWidth: 15 },
+            4: { cellWidth: 15 }
+          },
+          didParseCell: function(data) {
+            if (data.section === 'body' && data.column.index > 0) {
+              if (data.cell.raw === 'X') {
+                data.cell.styles.fillColor = [255, 255, 224]; // Amarillo claro
+              }
+            }
+          }
+        });
+
+        const finalY = doc.lastAutoTable.finalY + 10;
+        doc.text("Observaciones:", 20, finalY);
+        doc.text(document.getElementById('observaciones').value || "—", 20, finalY + 5, { maxWidth: 250 });
+        doc.text("Ayudante LH: _________________________", 20, finalY + 25);
+        doc.text("Jefe de Servicio: _________________________", 150, finalY + 25);
+
+        doc.save(`Inspeccion_IMSS_${new Date().toISOString().slice(0,10)}.pdf`);
+      };
+      img.onerror = () => {
+        alert("⚠️ No se pudo cargar el logo. El PDF se generará sin él.");
+        // Continuar sin logo
+        doc.setFontSize(14);
+        doc.setTextColor(0, 86, 163);
+        doc.text("INSTITUTO MEXICANO DEL SEGURO SOCIAL", 140, 15, { align: 'center' });
+        // ... resto del PDF sin logo
+        doc.save(`Inspeccion_IMSS_${new Date().toISOString().slice(0,10)}.pdf`);
+      };
+    }
+  </script>
+
+</body>
+</html>

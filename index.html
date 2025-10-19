@@ -144,24 +144,85 @@
 <table>
   <tr>
     <td><strong>Tipo y N° de Unidad:</strong></td>
-    <td colspan="2"><input type="text" id="unidad" value="HOSPITAL GENERAL REGIONAL No.66" style="width:100%;" /></td>
+    <td colspan="2">
+      <select id="unidad" style="width:100%;">
+        <option value="HOSPITAL GENERAL REGIONAL No.66">HOSPITAL GENERAL REGIONAL No.66</option>
+        <option value="HOSPITAL GENERAL REGIONAL No. 2">HOSPITAL GENERAL REGIONAL No. 2</option>
+        <option value="HOSPITAL GENERAL DE ZONA No. 35">HOSPITAL GENERAL DE ZONA No. 35</option>
+        <option value="HOSPITAL GENERAL DE ZONA No. 6">HOSPITAL GENERAL DE ZONA No. 6</option>
+      </select>
+    </td>
     <td><strong>Localidad:</strong></td>
-    <td colspan="2"><input type="text" id="localidad" value="CD JUAREZ" style="width:100%;" /></td>
+    <td colspan="2"><input type="text" id="localidad" value="CD JUAREZ" style="width:100%;" readonly /></td>
   </tr>
   <tr>
     <td><strong>Servicio:</strong></td>
-    <td colspan="2"><input type="text" id="servicio" style="width:100%;" /></td>
+    <td colspan="2">
+      <select id="servicio" style="width:100%;">
+        <option value="">-- Seleccione --</option>
+        <option value="PEDIATRIA">PEDIATRIA</option>
+        <option value="MEDICINA INTERNA">MEDICINA INTERNA</option>
+        <option value="CIRUGIA GENERAL">CIRUGIA GENERAL</option>
+        <option value="PLANTA BAJA">PLANTA BAJA</option>
+        <option value="SOTANO">SOTANO</option>
+      </select>
+    </td>
     <td><strong>Turno:</strong></td>
-    <td colspan="2"><input type="text" id="turno" style="width:100%;" /></td>
+    <td colspan="2">
+      <select id="turno" style="width:100%;">
+        <option value="">-- Seleccione --</option>
+        <option value="MATUTINO">MATUTINO</option>
+        <option value="VESPERTINO">VESPERTINO</option>
+        <option value="NOCTURNO">NOCTURNO</option>
+      </select>
+    </td>
   </tr>
   <tr>
     <td><strong>Área:</strong></td>
-    <td colspan="2"><input type="text" id="area" style="width:100%;" /></td>
+    <td colspan="5">
+      <select id="area" style="width:100%;">
+        <option value="">-- Seleccione --</option>
+        <option value="PREMATUROS">PREMATUROS</option>
+        <option value="LACTANTES">LACTANTES</option>
+        <option value="ESCOLARES">ESCOLARES</option>
+        <option value="HOSPITAL">HOSPITAL</option>
+        <option value="QUIROFANO">QUIROFANO</option>
+        <option value="CEYE">CEYE</option>
+        <option value="CLINICA DE HERIDAS">CLINICA DE HERIDAS</option>
+        <option value="ENDOSCOPIA">ENDOSCOPIA</option>
+        <option value="UMA">UMA</option>
+        <option value="HEMODIALISIS">HEMODIALISIS</option>
+        <option value="INHALOTERAPIA">INHALOTERAPIA</option>
+        <option value="QUIMIOTERAPIA">QUIMIOTERAPIA</option>
+        <option value="TRABAJO SOCIAL">TRABAJO SOCIAL</option>
+        <option value="TERAPIA INTENSIVA ADULTOS">TERAPIA INTENSIVA ADULTOS</option>
+        <option value="UCIN">UCIN</option>
+        <option value="OCOCREAN">OCOCREAN</option>
+        <option value="TOCOCIRUGIA">TOCOCIRUGIA</option>
+        <option value="ADMISION TOCO">ADMISION TOCO</option>
+        <option value="FARMACIA">FARMACIA</option>
+        <option value="ARCHIVO">ARCHIVO</option>
+        <option value="LABORATORIO">LABORATORIO</option>
+        <option value="IMAGENOLOGIA">IMAGENOLOGIA</option>
+        <option value="FISIATRIA">FISIATRIA</option>
+        <option value="GOBIERNO">GOBIERNO</option>
+        <option value="PATOLOGIA">PATOLOGIA</option>
+        <option value="URGENCIAS">URGENCIAS</option>
+        <option value="QX URGENCIAS">QX URGENCIAS</option>
+        <option value="RX URGENCIAS">RX URGENCIAS</option>
+        <option value="VESTIDORES">VESTIDORES</option>
+        <option value="OFICINAS ADMINISTRATIVAS">OFICINAS ADMINISTRATIVAS</option>
+        <option value="CONSULTA EXTERNA">CONSULTA EXTERNA</option>
+        <option value="SALAS DE ESP./B. PUBLICOS">SALAS DE ESP./B. PUBLICOS</option>
+        <option value="VESTIBULO / OFI. CORRESPONDIENTES">VESTIBULO / OFI. CORRESPONDIENTES</option>
+        <option value="BANCO DE SANGRE">BANCO DE SANGRE</option>
+        <option value="ALMACEN RPBI">ALMACEN RPBI</option>
+      </select>
     <td><strong>Responsable del Área:</strong></td>
     <td colspan="2"><input type="text" id="responsable" style="width:100%;" /></td>
   </tr>
 </table>
-
+   
 <table>
   <thead>
     <tr class="gray">
@@ -506,4 +567,5 @@ function resetearFormulario() {
 </body>
 </html>
 <script>
+
 

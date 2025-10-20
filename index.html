@@ -22,6 +22,10 @@
       text-align: center;
       margin-bottom: 10px;
     }
+    .header img {
+      height: 60px;
+      margin-bottom: 10px;
+    }
     .header h1 { margin: 2px 0; font-size: 16px; font-weight: bold; }
     .header p { margin: 2px 0; font-size: 12px; }
 
@@ -134,6 +138,7 @@
 <body>
 
 <div class="header">
+  <img src="imss-logo.gif" alt="Logo IMSS">
   <h1>INSTITUTO MEXICANO DEL SEGURO SOCIAL</h1>
   <p>Dirección de Administración y Evaluación a Delegaciones</p>
   <p>Coordinación de Infraestructura Inmobiliaria</p>
@@ -218,11 +223,10 @@
         <option value="BANCO DE SANGRE">BANCO DE SANGRE</option>
         <option value="ALMACEN RPBI">ALMACEN RPBI</option>
       </select>
-    <td><strong>Responsable del Área:</strong></td>
-    <td colspan="2"><input type="text" id="responsable" style="width:100%;" /></td>
+    </td>
   </tr>
 </table>
-   
+
 <table>
   <thead>
     <tr class="gray">
@@ -330,17 +334,14 @@
 </div>
 
 <script>
-// === 1. Definir los conceptos (3 columnas) ===
+// === Conceptos ===
 const conceptos = [
-  // Columna 1
   ["Archiveros", "Anaquel", "Autoclave", "Buro", "Bacinete", "Banco de altura", "Bano personal", "Bote basura", "Bancas tadem", "Barandales", "Banco giratorios", "Bascula para bebe", "Baño maria", "Bascula con estadimetro", "Bote camapana", "Bombas de infusion", "Baulmanometro portatil", "Camas", "Camillas", "Cunas", "Cuna radiante", "Central de enfermeria", "Cortinas", "Cubeta de patada", "Cestos de basura", "Camapana", "Carro de curaciones", "Carro porta expediante", "Carro pasteur", "Casilleros", "Cespol", "Computadoras", "Carro care", "carro de paro", "Carro amarillo", "Carro Contenedor", "Carro de limpieza (Negro )"],
-  // Columna 2
   ["Cuadros", "Credfenzas", "Centrigugas", "Espejos", "Escritorios", "Equipo electromedico", "Escaleras", "Estinguidor", "Extractor de aire (rejilla)", "Elevadores", "Limpieza de piso blando", "Filtro de campana", "Incubadora", "Jaboneras", "Lampara de techo", "Lamapara chicote", "Lamapara de pared", "Lavabos", "Lamapara de quirofano", "Lavado de piso duro", "limpieza setico", "Lavabo central con trampa para yeso", "Mesa de exploracion", "Mesa de riñon", "Mesa puente", "Mesa de expulsion", "Mesa mayo", "Mauina de anestesia", "Mesa de operaciones", "Mesa peines", "Mesa de autopsias", "Monitores portatiles", "Monitores de pared", "Mesas de trabajo", "Mamparas", "Marco de puerta", "Numeracion"],
-  // Columna 3
   ["orden de septico", "Paredes", "Puertas", "Persianas", "Pasillos", "Porta comodos", "Porta frascos", "Porta sueros", "Regadera", "Reposet", "Red de frio", "Resonador", "Sillas giratorias", "Silla de ruedas", "Torre cielitica", "Telefono", "Transfer", "Torre de endoscopia", "Toma de oxigeno", "Tuberia visible", "Tripie", "Techo", "Tomografo", "Ultrasonido", "Vidrios", "Vestidores", "Vitrinas", "Ventiladores", "Ventanillas", "Wc", "Zoclo"]
 ];
 
-// === 2. Establecer fecha de hoy ===
+// === Fecha de hoy ===
 function setFechaHoy() {
   const hoy = new Date();
   const fechaStr = hoy.toLocaleDateString('es-MX', {year: 'numeric', month: '2-digit', day: '2-digit'});
@@ -348,9 +349,8 @@ function setFechaHoy() {
 }
 setFechaHoy();
 
-// === 3. Renderizar tablas con checkboxes L/N/A/S por semana ===
+// === Renderizar tablas ===
 let semanaActiva = 0;
-
 function renderizarTablas() {
   for (let col = 0; col < 3; col++) {
     const tbody = document.getElementById(`col${col+1}`);
@@ -382,14 +382,13 @@ function renderizarTablas() {
       tbody.appendChild(row);
     });
   }
-  // Marcar "N/A" por defecto en todas las semanas
   setTimeout(() => {
     document.querySelectorAll('input[id*="_X_"]').forEach(cb => cb.checked = true);
   }, 100);
 }
 renderizarTablas();
 
-// === 4. Solo un checkbox activo por grupo ===
+// === Toggle checkboxes ===
 function toggleGroup(idChecked, id1, id2) {
   const checkedBox = document.getElementById(idChecked);
   const box1 = document.getElementById(id1);
@@ -400,18 +399,11 @@ function toggleGroup(idChecked, id1, id2) {
   }
 }
 
-// === 5. Seleccionar semana activa ===
+// === Seleccionar semana ===
 function seleccionarSemana(semana) {
   semanaActiva = semana;
-  // Deshabilitar todas las semanas
-  document.querySelectorAll('input[type="checkbox"]').forEach(cb => {
-    cb.disabled = true;
-  });
-  // Habilitar solo la semana seleccionada
-  document.querySelectorAll(`input[id$="_${semana}"]`).forEach(cb => {
-    cb.disabled = false;
-  });
-  // Actualizar estilo visual
+  document.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.disabled = true);
+  document.querySelectorAll(`input[id$="_${semana}"]`).forEach(cb => cb.disabled = false);
   document.querySelectorAll('th').forEach(th => {
     if (th.textContent.startsWith('SEMANA')) {
       th.style.background = '#555';
@@ -425,11 +417,10 @@ function seleccionarSemana(semana) {
   }
 }
 
-// === 6. Calcular porcentaje ===
+// === Calcular porcentaje ===
 function calcularPorcentaje() {
   let puntosPositivos = 0;
   let totalItems = 0;
-
   for (let col = 0; col < 3; col++) {
     const rows = document.querySelectorAll(`#col${col+1} tr`);
     rows.forEach(row => {
@@ -444,17 +435,15 @@ function calcularPorcentaje() {
       }
     });
   }
-
   const porcentaje = totalItems > 0 ? ((puntosPositivos / totalItems) * 100).toFixed(2) : 0;
   document.getElementById('promedioFinal').textContent = `${porcentaje}%`;
   document.getElementById('porcentajeCalculado').textContent = `Porcentaje de Limpieza = ${puntosPositivos} L × 100 / (${totalItems}) = ${porcentaje}%`;
 }
 
-// === 7. Exportar a Excel ===
+// === Exportar a Excel ===
 function exportarExcel() {
   const wb = XLSX.utils.book_new();
   const data = [];
-
   data.push(["INSTITUTO MEXICANO DEL SEGURO SOCIAL"]);
   data.push(["Dirección de Administración y Evaluación a Delegaciones"]);
   data.push(["Coordinación de Infraestructura Inmobiliaria"]);
@@ -463,13 +452,12 @@ function exportarExcel() {
   data.push([]);
   data.push(["Tipo y N° de Unidad:", document.getElementById('unidad').value, "Localidad:", document.getElementById('localidad').value]);
   data.push(["Servicio:", document.getElementById('servicio').value, "Turno:", document.getElementById('turno').value]);
-  data.push(["Área:", document.getElementById('area').value, "Responsable del Área:", document.getElementById('responsable').value]);
+  data.push(["Área:", document.getElementById('area').value, "Responsable del Área:", ""]);
   data.push([]);
   data.push(["Fecha de Inspección", "% Promedio Mensual"]);
   data.push([document.getElementById('fechaInspeccion').value, document.getElementById('promedioFinal').textContent]);
   data.push([]);
   data.push(["CONCEPTO", "SEMANA 1", "SEMANA 2", "SEMANA 3", "SEMANA 4"]);
-
   for (let col = 0; col < 3; col++) {
     conceptos[col].forEach(concepto => {
       const row = [concepto];
@@ -486,75 +474,52 @@ function exportarExcel() {
       data.push(row);
     });
   }
-
   const ws = XLSX.utils.aoa_to_sheet(data);
   ws['!cols'] = [{wch:30}, {wch:10}, {wch:10}, {wch:10}, {wch:10}];
   XLSX.utils.book_append_sheet(wb, ws, "Cédula NILES");
-
   const obsData = [["OBSERVACIONES:"], [document.getElementById('observaciones').value]];
   const obsWs = XLSX.utils.aoa_to_sheet(obsData);
   XLSX.utils.book_append_sheet(wb, obsWs, "Observaciones");
-
   XLSX.writeFile(wb, "NILES_Cedula_Completa.xlsx");
 }
 
-// === 8. Exportar PDF (copia fiel de la pantalla) ===
+// === Exportar a PDF (A4 vertical) ===
 function exportarPDF() {
   const element = document.body;
-
-  html2canvas(element, {
-    scale: 2, // Mayor calidad
-    useCORS: true,
-    allowTaint: true
-  }).then(canvas => {
+  html2canvas(element, { scale: 2, useCORS: true, allowTaint: true }).then(canvas => {
     const imgData = canvas.toDataURL('image/png');
-    const pdf = new jspdf.jsPDF('p', 'mm', 'a4'); // Portrait, A4
-    const pageWidth = 210; // A4 width in mm
-    const pageHeight = 297; // A4 height in mm
-
-    // Calcular proporción
-    const imgWidth = pageWidth - 20; // Margen de 10mm a cada lado
+    const pdf = new jspdf.jsPDF('p', 'mm', 'a4');
+    const pageWidth = 210;
+    const pageHeight = 297;
+    const imgWidth = pageWidth - 20;
     const imgHeight = (canvas.height * imgWidth) / canvas.width;
-
-    // Si el contenido es más alto que una página, podríamos dividirlo, pero para tu caso, asumimos 1 página
     if (imgHeight < pageHeight - 20) {
-      // Cabe en una página
       pdf.addImage(imgData, 'PNG', 10, 10, imgWidth, imgHeight);
     } else {
-      // Escalar para que quepa en altura también (forzado a 1 página)
       const scaleToFit = (pageHeight - 20) / imgHeight;
       const finalWidth = imgWidth * scaleToFit;
       const finalX = (pageWidth - finalWidth) / 2;
       pdf.addImage(imgData, 'PNG', finalX, 10, finalWidth, pageHeight - 20);
     }
-
     pdf.save('NILES_Cedula_Completa.pdf');
   });
 }
 
-// === 9. Resetear formulario ===
+// === Resetear formulario ===
 function resetearFormulario() {
   document.getElementById('servicio').value = "";
   document.getElementById('turno').value = "";
   document.getElementById('area').value = "";
-  document.getElementById('responsable').value = "";
   document.getElementById('observaciones').value = "";
-
-  // Desmarcar todos
   document.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = false);
-
-  // Volver a marcar "N/A" por defecto
   setTimeout(() => {
     document.querySelectorAll('input[id*="_X_"]').forEach(cb => cb.checked = true);
   }, 100);
-
   document.getElementById('promedioFinal').textContent = "0%";
   document.getElementById('porcentajeCalculado').textContent = "Porcentaje de Limpieza = 0 L × 100 / (0) = 0%";
   setFechaHoy();
   semanaActiva = 0;
-  // Habilitar todo
   document.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.disabled = false);
-  // Restaurar estilos
   document.querySelectorAll('th').forEach(th => {
     if (th.textContent.startsWith('SEMANA')) {
       th.style.background = '#555';
@@ -566,6 +531,3 @@ function resetearFormulario() {
 
 </body>
 </html>
-<script>
-
-
